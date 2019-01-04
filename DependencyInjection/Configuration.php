@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('shk4_plugins');
+        $rootNode = $treeBuilder->root('markdown');
 
         return $treeBuilder;
     }

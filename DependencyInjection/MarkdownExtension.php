@@ -26,7 +26,7 @@ class MarkdownExtension extends Extension
         $loader->load('services.yaml');
         $loader->load('commands.yaml');
 
-        $definition = $container->getDefinition('plugin_markdown');
+        $definition = $container->getDefinition('markdown');
         $definition->addArgument($config);
     }
 }
