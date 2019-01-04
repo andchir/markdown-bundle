@@ -1,0 +1,11 @@
+services:
+
+    plugin_markdown:
+        class: App\Plugin\MarkdownBundle\Service\MarkdownService
+        arguments: ['@service_container', '@logger']
+        public: true
+        autowire: true
+
+    App\Plugin\MarkdownBundle\Twig\AppExtension:
+        tags: ['twig.extension']
+        arguments: ['@service_container']
