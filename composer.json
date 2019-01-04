@@ -1,0 +1,21 @@
+{
+  "name": "andchir/markdown-bundle",
+  "description": "Markdown bundle for Symfony 3.x",
+  "keywords": ["symfony", "bundle", "markdown"],
+  "license": "MIT",
+  "homepage": "http://modx-shopkeeper.ru/",
+  "authors": [
+    {
+      "name": "andchir",
+      "email": "andchir@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Andchir\\MarkdownBundle\\": ""
+    }
+  },
+  "require": {
+    "erusev/parsedown": "^1.7"
+  }
+}
