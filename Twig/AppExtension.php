@@ -2,6 +2,7 @@
 
 namespace Andchir\MarkdownBundle\Twig;
 
+use App\Controller\CatalogController;
 use Parsedown;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -49,28 +50,44 @@ class AppExtension extends AbstractExtension
 
     /**
      * @param $content
+     * @param array $options
      * @return string
      */
-    public function markdownFilter($content)
+    public function markdownFilter($content, $options = [])
     {
         $parsedown = new Parsedown();
+        foreach ($options as $key => $val) {
+            if (method_exists($parsedown,"set{$key}")) {
+                call_user_func(array($parsedown, "set{$key}"), $val);
+            }
+        }
         return $parsedown->text($content);
     }
 
     /**
      * @param string $filePath
+     * @param string $collectionName
+     * @param int $itemId
+     * @param string $fieldName
      * @return string
      */
-    public function includeFileContentFunction($filePath)
+    public function includeFileContentFunction($filePath, $collectionName = '', $itemId = 0, $fieldName = '')
     {
         $rootPath = realpath($this->container->getParameter('kernel.root_dir').'/../..');
         if (substr($filePath, 0, 1) !== '/') {
             $filePath = '/' . $filePath;
         }
         $filePath = $rootPath . $filePath;
-        if (file_exists($filePath)) {
-            return file_get_contents($filePath);
+        $content = file_exists($filePath) ? file_get_contents($filePath) : '';
+        if ($collectionName && $itemId && $fieldName) {
+            $catalogController = new CatalogController();
+            $catalogController->setContainer($this->container);
+            $collection = $catalogController->getCollection($collectionName);
+            $result = $collection->update(
+                ['_id' => $itemId],
+                ['$set' => [$fieldName => $content]]
+            );
         }
-        return '';
+        return $content;
     }
 }

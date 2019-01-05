@@ -8,6 +8,10 @@ Usage example:
 ~~~
 
 ~~~
+{{ currentPage.description | markdown({urlsLinked: false, safeMode: true, breaksEnabled: true, markupEscaped: true}) }}
+~~~
+
+~~~
 {{ includeFileContent(currentPage.file_content_path) | markdown }}
 ~~~
 
