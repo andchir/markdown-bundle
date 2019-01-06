@@ -1,1 +1,6 @@
 services:
+    markdown_action:
+        class: Andchir\MarkdownBundle\Command\ActionCommand
+        public: true
+        tags:
+            - { name: console.command }
