@@ -1,5 +1,6 @@
 {
   "name": "andchir/markdown-bundle",
+  "type": "symfony-bundle",
   "description": "Markdown bundle for Symfony 3.x",
   "keywords": ["symfony", "bundle", "markdown"],
   "license": "MIT",
