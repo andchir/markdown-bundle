@@ -80,10 +80,10 @@ class AppExtension extends AbstractExtension
         $filePath = $rootPath . $filePath;
         $content = file_exists($filePath) ? file_get_contents($filePath) : '';
         if ($collectionName && $itemId && $fieldName) {
-            $catalogController = new CatalogController();
-            $catalogController->setContainer($this->container);
-            $collection = $catalogController->getCollection($collectionName);
-            $result = $collection->update(
+            /** @var CatalogService $catalogService */
+            $catalogService = $this->container->get('app.catalog');
+            $collection = $catalogService->getCollection($collectionName);
+            $result = $collection->updateOne(
                 ['_id' => $itemId],
                 ['$set' => [$fieldName => $content]]
             );
