@@ -2,6 +2,10 @@
 MarkdownBundle
 ==============
 
+~~~
+composer require andchir/markdown-bundle
+~~~
+
 Usage example:
 ~~~
 {{ currentPage.description | markdown }}
