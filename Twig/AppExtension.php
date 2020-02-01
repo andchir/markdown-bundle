@@ -9,11 +9,14 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 
 class AppExtension extends AbstractExtension
 {
     /** @var ContainerInterface */
     protected $container;
+    /** @var  RequestStack */
+    protected $requestStack;
     /** @var array */
     protected $cache = [];
 
@@ -21,9 +24,10 @@ class AppExtension extends AbstractExtension
      * AppExtension constructor.
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, RequestStack $requestStack)
     {
         $this->container = $container;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -73,6 +77,11 @@ class AppExtension extends AbstractExtension
      */
     public function includeFileContentFunction($filePath, $collectionName = '', $itemId = 0, $fieldName = '')
     {
+        /** @var Request $request */
+        $request = $this->requestStack->getCurrentRequest();
+        $localeDefault = $this->container->getParameter('locale');
+        $locale = $request->getLocale();
+        
         $rootPath = realpath($this->container->getParameter('kernel.root_dir').'/../..');
         if (substr($filePath, 0, 1) !== '/') {
             $filePath = '/' . $filePath;
@@ -83,10 +92,25 @@ class AppExtension extends AbstractExtension
             /** @var CatalogService $catalogService */
             $catalogService = $this->container->get('app.catalog');
             $collection = $catalogService->getCollection($collectionName);
-            $result = $collection->updateOne(
-                ['_id' => $itemId],
-                ['$set' => [$fieldName => $content]]
-            );
+            if ($localeDefault === $locale) {
+                $result = $collection->updateOne(
+                    ['_id' => $itemId],
+                    ['$set' => [$fieldName => $content]]
+                );
+            } else {
+                $document = $collection->findOne(['_id' => $itemId]);
+                if ($document) {
+                    $translations = $document['translations'] ?? [];
+                    if (!isset($translations[$fieldName])) {
+                        $translations[$fieldName] = [];
+                    }
+                    $translations[$fieldName][$locale] = $content;
+                    $result = $collection->updateOne(
+                        ['_id' => $itemId],
+                        ['$set' => ['translations' => $translations]]
+                    );
+                }
+            }
         }
         return $content;
     }
