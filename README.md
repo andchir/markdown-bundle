@@ -32,7 +32,7 @@ bundles.php:
 ~~~
 return [
     ...,
-    App\Plugin\MarkdownBundle\MarkdownBundle::class => ['all' => true]
+    Andchir\MarkdownBundle\MarkdownBundle\MarkdownBundle::class => ['all' => true]
 ];
 ~~~
 
